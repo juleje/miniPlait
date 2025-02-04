@@ -40,8 +40,6 @@ parse :: S-Exp -> Expr
 `parse` only accepts expressions that follow miniPlait's [grammar](#grammar).
 
 ### Interpreter
-a function: `interp`.
-
 `interp :: Expr -> Value`
 
     which consumes an abstract syntax tree (i.e. an `Expr`) and returns a miniPlait `Value`.
