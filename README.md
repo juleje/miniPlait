@@ -42,13 +42,7 @@ parse :: S-Exp -> Expr
 ### Interpreter
 `interp :: Expr -> Value`
 
-    which consumes an abstract syntax tree (i.e. an `Expr`) and returns a miniPlait `Value`.
-
-    `interp` evaluates programs by performing a
-    _post-order traversal_ of the abstract syntax tree (AST): first, evaluate
-    all of the children of an expression from left to right, then evaluate the
-    expression itself. This makes it unambiguous which error to
-    raise if there are multiple errors in the AST.
+which consumes an abstract syntax tree (i.e. an `Expr`) and returns a miniPlait `Value`. `interp` evaluates programs by performing a  _post-order traversal_ of the abstract syntax tree (AST): first, evaluate all of the children of an expression from left to right, then evaluate the expression itself. This makes it unambiguous which error to raise if there are multiple errors in the AST.
 
 The features of the `interp`:
 - Environment:
