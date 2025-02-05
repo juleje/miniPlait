@@ -66,8 +66,9 @@ The features of the `interp`:
     - The interpreter uses an environment, `Env`, to keep track of the `Value`s of variables in scope: `(define-type-alias Env (Hashof Symbol Value))`
     -  `interp` allows _variable shadowing_, meaning that if you bind a variable that is already bound, the new binding takes precedence.
     -  When `interp` encounters an unbound variable, `interp` raises an error.
-- Binary Operators: iniPlait includes binary addition (`+`) and number equality testing (`num=`), as
+- Binary Operators: miniPlait includes binary addition (`+`) and number equality testing (`num=`), as
 well as string appending (`++`) and string equality testing (`str=`).
+- Unary Operators: miniPlait includes features to manipulates list. See Type Checker features for details.
 - Conditionals:
     - `if`-expressions in miniPlait have three parts:
       - `cond`, which should evaluate to a Boolean `Value`
