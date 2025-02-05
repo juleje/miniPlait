@@ -79,7 +79,7 @@ The features of the `desugar`:
   expressions are true; otherwise, it evaluates to `false`.
   - `or` consumes two boolean expressions. It evaluates to `true` if at least one
   boolean expression is true; otherwise, it evaluates to `false`.
-- `let: `let` should accept a single variable-value pair and a body. `let` evaluates the value, binds it to the variable, and evaluates the body with the newly bound variable in scope. For example, the following should evaluate to `3`: ``` (let (x 1) (+ x 2)) ```
+- `let`: should accept a single variable-value pair and a body. `let` evaluates the value, binds it to the variable, and evaluates the body with the newly bound variable in scope. For example, the following should evaluate to `3`: ``` (let (x 1) (+ x 2)) ```
 
 ### Abstract Syntax
 
