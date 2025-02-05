@@ -1,5 +1,7 @@
 # MiniPlait
 
+MiniPlait is a minimalist Lisp-like language developed using Plait as the metalanguage. This project is part of the Comparative Programming Languages course for the Master's program in Computer Science.
+
 ## Grammar
 
 The grammar of miniPlait is as follows:
