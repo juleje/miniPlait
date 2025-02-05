@@ -109,23 +109,21 @@ The features of the `type-of`:
 
     `(empty : t)` makes an empty list whose elements have type `t`.
 
-- `link :: t, (List t) -> (List t)`
+  - `link :: t, (List t) -> (List t)`
 
     `(link x y)` appends the element `x` to the front of the list `y`.
 
-- `first :: (List t) -> t`
+  - `first :: (List t) -> t`
 
     `(first x)` returns the first element of `x`.
 
-- `rest :: (List t) -> (List t)`
+  - `rest :: (List t) -> (List t)`
 
     `(rest x)` returns the list `x` except for the first element of `x`.
 
-- `is-empty :: (List t) -> Bool`
+  - `is-empty :: (List t) -> Bool`
 
     `(is-empty x)` returns `true` if `x` is `empty`; otherwise, it returns false.
-- d
-
 
 ### Abstract Syntax
 
