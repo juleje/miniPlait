@@ -7,7 +7,6 @@ The grammar of miniPlait is as follows:
 ```
 <expr> ::= <num>
          | <string>
-         | <var>                        # variable (a.k.a. identifier)
          | true
          | false
          | (+ <expr> <expr>)
@@ -17,9 +16,21 @@ The grammar of miniPlait is as follows:
          | (if <expr> <expr> <expr>)
          | (and <expr> <expr>)
          | (or <expr> <expr>)
-         | (let (<var> <expr>) <expr>)
-         | (lam <var> <expr>)           # anonymous function
-         | (<expr> <expr>)             # function application
+         | <id>
+         | (<expr> <expr>)
+         | (lam (<id> : <type>) <expr>)
+         | (let (<id> <expr> : <type>) <expr>)
+         | (first <expr>)
+         | (rest <expr>)
+         | (is-empty <expr>)
+         | (empty : <type>)
+         | (link <expr> <expr>)
+
+<type> ::= Num
+         | Str
+         | Bool
+         | (List <type>)
+         | (<type> -> <type>)
 ```
 
 ## Implementation
@@ -81,34 +92,76 @@ The features of the `desugar`:
   boolean expression is true; otherwise, it evaluates to `false`.
 - `let`: should accept a single variable-value pair and a body. `let` evaluates the value, binds it to the variable, and evaluates the body with the newly bound variable in scope. For example, the following should evaluate to `3`: ``` (let (x 1) (+ x 2)) ```
 
-### Abstract Syntax
-
-Refer to [Environment](#environment) for the definition of `Env` and
-[Binary Operators](#binary-operators) for the definition of `Operator`.
+### Type Checker
 
 ```
+type-of :: Expr -> Type
+```
+
+that consumes a miniPlait program in abstract syntax form. If the program is well-typed, `type-of` returns the `Type` of that program; otherwise, it raises an exception.
+
+The features of the `type-of`: 
+- Type Environment: The type language the type checker works with respectively, represent the types of numbers, Booleans, strings, (one-argument) functions, and (homogenous) lists. Just as how Interpreter had an `Env` for mapping identifiers to values, your interpreter should use a type environment (`TEnv`) to keep track of the _types_ of identifiers in scope. In `type-of`, if the program binds an identifier that is already bound, the new binding should take precedence. This is known as _identifier shadowing_. The new binding shadows the existing binding.
+- `let`: is a new expression which should accept a single identifier-value pair and a body. `let` evaluates the value, binds it to the identifier, and evaluates the body with the newly bound identifier in scope.
+- Lists: Typed version of miniPlait contains support for lists via the constant `empty` and the operations `link`, `is-empty`, `first`, and `rest`. Lists in miniPlait are _homogeneous_: all elements in the list must have the same type.
+  - `empty`
+
+    `(empty : t)` makes an empty list whose elements have type `t`.
+
+- `link :: t, (List t) -> (List t)`
+
+    `(link x y)` appends the element `x` to the front of the list `y`.
+
+- `first :: (List t) -> t`
+
+    `(first x)` returns the first element of `x`.
+
+- `rest :: (List t) -> (List t)`
+
+    `(rest x)` returns the list `x` except for the first element of `x`.
+
+- `is-empty :: (List t) -> Bool`
+
+    `(is-empty x)` returns `true` if `x` is `empty`; otherwise, it returns false.
+- d
+
+
+### Abstract Syntax
+
+```racket
+(define-type Type
+  (t-num)
+  (t-bool)
+  (t-str)
+  (t-fun [arg-type : Type] [return-type : Type])
+  (t-list [elem-type : Type]))
+
 (define-type Value
   (v-num [value : Number])
-  (v-str [value : String])
   (v-bool [value : Boolean])
+  (v-str [value : String])
   (v-fun [param : Symbol]
          [body : Expr]
-         [env : Env]))
+         [env : Env])
+  (v-list [vals : (Listof Value)]))
 
 (define-type Expr+
   (e-num+ [value : Number])
-  (e-str+ [value : String])
   (e-bool+ [value : Boolean])
+  (e-str+ [value : String])
   (e-op+ [op : Operator]
-        [left : Expr+]
-        [right : Expr+])
+         [left : Expr+]
+         [right : Expr+])
+  (e-un-op+ [op : UnaryOperator]
+            [expr : Expr+])
   (e-if+ [cond : Expr+]
-        [consq : Expr+]
-        [altern : Expr+])
+         [consq : Expr+]
+         [altern : Expr+])
   (e-lam+ [param : Symbol]
-         [body : Expr+])
+          [arg-type : Type]
+          [body : Expr+])
   (e-app+ [func : Expr+]
-         [arg : Expr+])
+          [arg : Expr+])
   (e-var+ [name : Symbol])
   (sugar-and [left : Expr+]
              [right : Expr+])
@@ -116,22 +169,20 @@ Refer to [Environment](#environment) for the definition of `Env` and
             [right : Expr+])
   (sugar-let [var : Symbol]
              [value : Expr+]
-             [body : Expr+]))
+             [type : Type]
+             [body : Expr+])
+  (e-empty+ [elem-type : Type]))
 
-(define-type Expr
-  (e-num [value : Number])
-  (e-str [value : String])
-  (e-bool [value : Boolean])
-  (e-op [op : Operator]
-        [left : Expr]
-        [right : Expr])
-  (e-if [cond : Expr]
-        [consq : Expr]
-        [altern : Expr])
-  (e-lam [param : Symbol]
-         [body : Expr])
-  (e-app [func : Expr]
-         [arg : Expr])
-  (e-var [name : Symbol]))
+(define-type Operator
+  (op-plus)
+  (op-append)
+  (op-num-eq)
+  (op-str-eq)
+  (op-link))
+
+(define-type UnaryOperator
+  (op-first)
+  (op-rest)
+  (op-is-empty))
 ```
 
